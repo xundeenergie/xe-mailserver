@@ -34,6 +34,7 @@ case "$1" in
     configure)
         python3 -m pip install --upgrade radicale
         python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleIMAP
+        python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleInfCloud
         ;;
     abort-upgrade|abort-remove|abort-deconfigure)
         exit 0
