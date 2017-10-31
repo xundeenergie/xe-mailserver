@@ -35,6 +35,7 @@ case "$1" in
         python3 -m pip install --upgrade radicale
         python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleIMAP
         python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleInfCloud
+        mkdir /var/www/rainloop && curl -sL https://repository.rainloop.net/installer.php | php
         SERVICES="mailserver.target xe-dovecot.service xe-dovecot.socket xe-exim4.service radicale.service"
         for s in $SERVICES; do
             deb-systemd-helper-new unmask $s >/dev/null || true
