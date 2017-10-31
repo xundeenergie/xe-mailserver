@@ -35,6 +35,18 @@ case "$1" in
         python3 -m pip install --upgrade radicale
         python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleIMAP
         python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleInfCloud
+        SERVICES="mailserver.target xe-dovecot.service xe-dovecot.socket xe-exim4.service radicale.service"
+        for s in $SERVICES; do
+            deb-systemd-helper-new unmask $s >/dev/null || true
+            if deb-systemd-helper-new --quiet was-enabled $s; then
+                    # Enables the unit on first installation, creates new
+                    # symlinks on upgrades if the unit file has changed.
+                    deb-systemd-helper-new enable $s >/dev/null || true
+            else
+                    # Update the statefile to add new symlinks (if any), which need to be
+                    # cleaned up on purge. Also remove old symlinks.
+                    deb-systemd-helper-new update-state $s >/dev/null || true
+            fi
         ;;
     abort-upgrade|abort-remove|abort-deconfigure)
         exit 0
