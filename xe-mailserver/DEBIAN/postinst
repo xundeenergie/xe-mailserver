@@ -32,10 +32,17 @@ set -e
 case "$1" in
 
     configure)
-        python3 -m pip install --upgrade radicale
-        python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleIMAP
-        python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleInfCloud
-        mkdir /var/www/rainloop && curl -sL https://repository.rainloop.net/installer.php | php
+        pip3 show radicale || python3 -m pip install --upgrade radicale
+        pip3 show radicale_imap || python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleIMAP
+        pip3 show radicale_infcloud || python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleInfCloud
+        [ -e "/var/www/rainloop" ] || mkdir /var/www/rainloop && curl -sL https://repository.rainloop.net/installer.php | php
+        # Set owner, group and permissions for rainloop
+        cd /var/www/rainloop
+        find . -type d -exec chmod 755 {} \;
+        find . -type f -exec chmod 644 {} \;
+        chown -R www-data:www-data .
+
+        # enable new services for webserver
         SERVICES="mailserver.target xe-dovecot.service xe-dovecot.socket xe-exim4.service radicale.service"
         for s in $SERVICES; do
             deb-systemd-helper-new unmask $s >/dev/null || true
@@ -48,6 +55,7 @@ case "$1" in
                     # cleaned up on purge. Also remove old symlinks.
                     deb-systemd-helper-new update-state $s >/dev/null || true
             fi
+        done
         ;;
     abort-upgrade|abort-remove|abort-deconfigure)
         exit 0
