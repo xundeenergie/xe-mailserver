@@ -35,7 +35,12 @@ case "$1" in
         pip3 show radicale || python3 -m pip install --upgrade radicale
         pip3 show radicale_imap || python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleIMAP
         pip3 show radicale_infcloud || python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleInfCloud
-        [ -e "/var/www/rainloop" ] || mkdir /var/www/rainloop && cd /var/www/rainloop && /usr/bin/curl -sL https://repository.rainloop.net/installer.php | php
+        if test -d "/var/www/rainloop"; then
+            :
+        else
+            mkdir /var/www/rainloop  
+            cd /var/www/rainloop && /usr/bin/curl -sL https://repository.rainloop.net/installer.php | php
+        fi
         # Set owner, group and permissions for rainloop
         cd /var/www/rainloop
         find . -type d -exec chmod 755 {} \;
