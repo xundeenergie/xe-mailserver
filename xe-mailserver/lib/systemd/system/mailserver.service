@@ -1,0 +1,11 @@
+[Unit]
+Description=Meta-Service for all Mailserver-Services 
+After=mailserver.target
+
+[Service]
+ExecStart=/bin/true
+ExecReload=/bin/true
+RemainAfterExit=true
+
+[Install]
+WantedBy=mailserver.target

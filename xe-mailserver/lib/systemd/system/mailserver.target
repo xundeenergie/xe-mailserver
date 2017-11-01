@@ -1,0 +1,6 @@
+[Unit]
+Description=Dovecot, Exim4 and all other services for a mailserver
+StopWhenUnneeded=yes
+
+[Install]
+WantedBy=basic.target

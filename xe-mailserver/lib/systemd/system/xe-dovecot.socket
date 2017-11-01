@@ -1,5 +1,6 @@
 [Unit]
 Description=Dovecot IMAP/POP3 email server activation socket
+BindsTo=mailserver.service
 
 [Socket]
 #dovecot expects separate IPv4 and IPv6 sockets
@@ -8,7 +9,10 @@ ListenStream=0.0.0.0:143
 ListenStream=[::]:143
 ListenStream=0.0.0.0:993
 ListenStream=[::]:993
+ListenStream=/var/run/dovecot/auth-userdb
+RemoveOnStop=true
 KeepAlive=true
+Service=xe-dovecot.service
 
 [Install]
 WantedBy=sockets.target

@@ -1,0 +1,29 @@
+[Unit]
+Documentation=man:radicale(8)
+Description=Radicale CalDAV and CardDAV server
+Before=multi-user.target
+PartOf=mailserver.service
+ReloadPropagatedFrom=mailserver.service
+#After=remote-fs.target
+
+[Service]
+ExecStart=/usr/bin/python3 -m radicale --config /etc/radicale/xe-config  -f -D 
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+User=radicale
+Group=radicale
+UMask=0027
+KillMode=process
+RuntimeDirectory=radicale
+# Optional security settings
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+NoNewPrivileges=true
+ReadWritePaths=/var/lib/radicale/collections
+
+[Install]
+WantedBy=mailserver.target

@@ -32,9 +32,9 @@ set -e
 case "$1" in
 
     configure)
-        pip3 show radicale || python3 -m pip install --upgrade radicale
-        pip3 show radicale_imap || python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleIMAP
-        pip3 show radicale_infcloud || python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleInfCloud
+        pip3 show radicale > /dev/null || python3 -m pip install --upgrade radicale
+        pip3 show radicale_imap > /dev/null || python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleIMAP
+        pip3 show radicale_infcloud > /dev/null || python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleInfCloud
         if test -d "/var/www/rainloop"; then
             :
         else
@@ -48,7 +48,7 @@ case "$1" in
         chown -R www-data:www-data .
 
         # enable new services for webserver
-        SERVICES="mailserver.target xe-dovecot.service xe-dovecot.socket xe-exim4.service radicale.service"
+        SERVICES="mailserver.target mailserver.service xe-dovecot.service xe-dovecot.socket xe-exim4.service xe-radicale.service"
         for s in $SERVICES; do
             deb-systemd-helper-new unmask $s >/dev/null || true
             if deb-systemd-helper-new --quiet was-enabled $s; then
