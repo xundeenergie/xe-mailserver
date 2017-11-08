@@ -11,17 +11,17 @@ ExecStop=/usr/sbin/dovecot stop
 Restart=always
 RestartSec=4
 RuntimeDirectory=dovecot
-#RootDirectory=/
-# Optional security settings
-PrivateTmp=true
-ProtectSystem=full
-ProtectHome=read-only
-#ProtectHome=true
-ProtectKernelTunables=true
-ProtectKernelModules=true
-ProtectControlGroups=true
-NoNewPrivileges=true
-ReadWritePaths=/var/mail /var/spool/mail /var/spool/dovecot /var/lib/dovecot /var/lib/dovecot/db/
+##RootDirectory=/
+## Optional security settings
+#PrivateTmp=true
+#ProtectSystem=full
+#ProtectHome=read-only
+##ProtectHome=true
+#ProtectKernelTunables=true
+#ProtectKernelModules=true
+#ProtectControlGroups=true
+#NoNewPrivileges=true
+#ReadWritePaths=/var/mail /var/spool/mail /var/spool/dovecot /var/lib/dovecot /var/lib/dovecot/db/
 
 
 [Install]
