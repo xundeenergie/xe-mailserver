@@ -1,0 +1,12 @@
+[Unit]
+Description=fetchmail-target
+Wants=exim-daemon.service dovecot.service
+After=exim-daemon.service dovecot.service
+After=timer-afterboot.target
+PartOf=connection-online.target
+StopWhenUnneeded=yes
+
+[Install]
+#WantedBy=network-online.target
+#WantedBy=timer-afterboot.target
+WantedBy=connection-online.target

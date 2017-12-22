@@ -1,0 +1,18 @@
+[Unit]
+# It needs a Install-Section to a cron-job.
+Description=Compile sa-rules
+Requisite=connection-online.target
+After=connection-online.target
+
+[Service]
+ExecStartPre=/usr/bin/spamassassin --lint
+ExecStart=/usr/bin/sa-compile
+ExecStopPost=/bin/touch /var/lib/spamassassin/compiled/.compiled
+
+Nice=10
+IOSchedulingClass=3
+#IOSchedulingPriority=
+CPUSchedulingPolicy=idle
+
+[Install]
+WantedBy=timer-daily.target

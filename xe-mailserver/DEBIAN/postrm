@@ -13,9 +13,13 @@ fi
 # System-Services:
 # put in full unit-name. for example "mkbackup@hourly.service"
 #SERVICES="mkbackup.target backup.automount var-cache-backup.automount btrfs-scrub@var-cache-btrfs_pool_SYSTEM.service mkbackup@manually.service mkbackup@aptupgrade.service mkbackup@daily.service mkbackup@weekly.service mkbackup@monthly.service mkbackup@plugin.service mkbackup@manually.service"
-SERVICES="mailserver.target mailserver.service"
-INSTSERVICES="xe-exim4.service xe-dovecot.service xe-dovecot.socket xe-radicale.service"
-
+SERVICES="mailserver.target 
+        mailserver.service
+        xe-exim4.service
+        xe-dovecot.service
+        sa-update.path "
+INSTSERVICES="sa-update-keys@spamassassin.heinlein-support.de.service
+        sa-update-keys@updates.spamassassin.org.service"
 
 case "$1" in
     purge)

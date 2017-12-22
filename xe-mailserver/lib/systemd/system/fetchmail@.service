@@ -1,0 +1,17 @@
+[Unit]
+Description=fetchmail for User %i
+PartOf=fetchmail.target
+OnFailure=status-email-root@%n.service
+
+ConditionFileNotEmpty=/home/%i/.fetchmailrc
+
+[Service]
+Type=simple
+User=%i
+Environment=FETCHMAILUSER=%i
+ExecStart=-/usr/bin/fetchmail --nodetach
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=fetchmail.target

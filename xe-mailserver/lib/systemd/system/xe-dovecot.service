@@ -1,28 +1,34 @@
 [Unit]
 Description=IMAP server (dovecot)
 OnFailure=status-email-root@%n.service
-PartOf=mailserver.service
+PartOf=mailserver.service xe-dovecot.socket
 ReloadPropagatedFrom=mailserver.service
 
 [Service]
-ExecStart=/usr/sbin/dovecot -F -c /etc/dovecot/dovecot.conf
-ExecReload=/usr/sbin/dovecot reload
-ExecStop=/usr/sbin/dovecot stop
-Restart=always
-RestartSec=4
+#ExecStart=/usr/sbin/dovecot -F -c /etc/dovecot/dovecot.conf
+#ExecReload=/usr/sbin/dovecot reload
+#ExecStop=/usr/sbin/dovecot stop
+ExecStart=/usr/local/sbin/dovecot -F -c /usr/local/etc/dovecot/dovecot.conf
+ExecReload=/usr/local/sbin/dovecot reload
+ExecStop=/usr/local/sbin/dovecot stop
+#Restart=always
+Restart=on-success
+RestartSec=2
 RuntimeDirectory=dovecot
+LimitNOFILE=4096
+#LimitNOFILE=infinity
 ##RootDirectory=/
 ## Optional security settings
-#PrivateTmp=true
-#ProtectSystem=full
+PrivateTmp=true
+#ProtectSystem=strict
 #ProtectHome=read-only
-##ProtectHome=true
-#ProtectKernelTunables=true
-#ProtectKernelModules=true
-#ProtectControlGroups=true
-#NoNewPrivileges=true
+#ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+NoNewPrivileges=true
 #ReadWritePaths=/var/mail /var/spool/mail /var/spool/dovecot /var/lib/dovecot /var/lib/dovecot/db/
 
 
 [Install]
-WantedBy=mailserver.target
+WantedBy=mailserver.target xe-dovecot.socket

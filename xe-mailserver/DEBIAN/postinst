@@ -32,23 +32,31 @@ set -e
 case "$1" in
 
     configure)
-        pip3 show radicale > /dev/null || python3 -m pip install --upgrade radicale
-        pip3 show radicale_imap > /dev/null || python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleIMAP
-        pip3 show radicale_infcloud > /dev/null || python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleInfCloud
-        if test -d "/var/www/rainloop"; then
-            :
-        else
-            mkdir /var/www/rainloop  
-            cd /var/www/rainloop && /usr/bin/curl -sL https://repository.rainloop.net/installer.php | php
-        fi
-        # Set owner, group and permissions for rainloop
-        cd /var/www/rainloop
-        find . -type d -exec chmod 755 {} \;
-        find . -type f -exec chmod 644 {} \;
-        chown -R www-data:www-data .
+        #radicale wird nicht mehr installiert, stattdessen kommt horde zum Einsatz. 
+#        pip3 show radicale > /dev/null || python3 -m pip install --upgrade radicale
+#        pip3 show radicale_imap > /dev/null || python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleIMAP
+#        pip3 show radicale_infcloud > /dev/null || python3 -m pip install --upgrade git+https://github.com/Unrud/RadicaleInfCloud
+#        if test -d "/var/www/rainloop"; then
+#            :
+#        else
+#            mkdir /var/www/rainloop  
+#            cd /var/www/rainloop && /usr/bin/curl -sL https://repository.rainloop.net/installer.php | php
+#        fi
+#        # Set owner, group and permissions for rainloop
+#        cd /var/www/rainloop
+#        find . -type d -exec chmod 755 {} \;
+#        find . -type f -exec chmod 644 {} \;
+#        chown -R www-data:www-data .
 
-        # enable new services for webserver
-        SERVICES="mailserver.target mailserver.service xe-dovecot.service xe-dovecot.socket xe-exim4.service xe-radicale.service"
+        # enable new services for mailserver
+        SERVICES="mailserver.target 
+                mailserver.service
+                xe-dovecot.service 
+                xe-exim4.service 
+                sa-update.path
+                sa-update-keys@spamassassin.heinlein-support.de.service
+                sa-update-keys@updates.spamassassin.org.service "
+                
         for s in $SERVICES; do
             deb-systemd-helper-new unmask $s >/dev/null || true
             if deb-systemd-helper-new --quiet was-enabled $s; then

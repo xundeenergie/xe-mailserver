@@ -11,12 +11,13 @@ ExecStart=-/usr/sbin/exim -bdf -q30m
 ExecReload=/bin/kill -s SIGHUP $MAINPID
 Restart=always
 # Optional security settings
-PrivateTmp=true
+#PrivateTmp=false
 ProtectSystem=full
 ProtectHome=read-only
 ProtectKernelTunables=true
 ProtectKernelModules=true
 ProtectControlGroups=true
+SupplementaryGroups=vmail
 #NoNewPrivileges=true
 ReadWritePaths=/var/mail /var/spool/mail /var/spool/exim4 /var/log/exim4
 

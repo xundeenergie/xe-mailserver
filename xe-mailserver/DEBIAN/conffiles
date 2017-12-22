@@ -4,3 +4,11 @@
 /lib/systemd/system/mailserver.service
 /lib/systemd/system/mailserver.target
 /lib/systemd/system/xe-radicale.service
+/lib/systemd/system/sa-compile.service
+/lib/systemd/system/sa-update.path
+/lib/systemd/system/sa-update.service
+/lib/systemd/system/sa-update-keys@.service
+/lib/systemd/system/fetchmail.target
+/lib/systemd/system/fetchmail@.service
+/lib/systemd/system/bogotrainer@.service
+/usr/bin/bogotrainer
