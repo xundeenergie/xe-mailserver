@@ -55,7 +55,9 @@ case "$1" in
                 xe-exim4.service 
                 sa-update.path
                 sa-update-keys@spamassassin.heinlein-support.de.service
-                sa-update-keys@updates.spamassassin.org.service "
+                sa-update-keys@updates.spamassassin.org.service
+                fetchmail.target
+                "
                 
         for s in $SERVICES; do
             deb-systemd-helper-new unmask $s >/dev/null || true
