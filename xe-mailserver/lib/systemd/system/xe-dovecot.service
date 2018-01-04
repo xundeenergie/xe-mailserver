@@ -14,10 +14,13 @@ ExecStop=/usr/local/sbin/dovecot stop
 #Restart=always
 Restart=on-success
 RestartSec=2
-RuntimeDirectory=dovecot
+#RuntimeDirectory=dovecot
 LimitNOFILE=4096
+
+#LimitCORE=infinity
 #LimitNOFILE=infinity
-##RootDirectory=/
+#RootDirectory=/usr/local
+#WorkingDirectory=var/run/dovecot
 ## Optional security settings
 PrivateTmp=true
 #ProtectSystem=strict
@@ -31,4 +34,4 @@ NoNewPrivileges=true
 
 
 [Install]
-WantedBy=mailserver.target xe-dovecot.socket
+WantedBy=mailserver.target
