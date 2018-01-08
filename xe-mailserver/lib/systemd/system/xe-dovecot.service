@@ -15,9 +15,13 @@ ExecStop=/usr/local/sbin/dovecot stop
 Restart=on-success
 RestartSec=2
 #RuntimeDirectory=dovecot
-LimitNOFILE=4096
+LimitNOFILE=8192
 
 #LimitCORE=infinity
+LimitAS=infinity 
+LimitRSS=infinity 
+LimitCORE=infinity 
+LimitNOFILE=65536
 #LimitNOFILE=infinity
 #RootDirectory=/usr/local
 #WorkingDirectory=var/run/dovecot
