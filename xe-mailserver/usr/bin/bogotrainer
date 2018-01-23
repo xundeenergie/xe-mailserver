@@ -123,7 +123,7 @@ for user in ${USERS}; do
     		let "ha=ha+1"
     		Debug 1 "HAM - $m"
     		#test $TEST -eq 0 && register_ham ${m};
-    		Run register_ham "${m}"
+    		[ -e ${m} ] && Run register_ham "${m}"
     		#err=$((err + $?))
     		Debug 2 "ERR-HAM: $err"
     	done 
@@ -140,7 +140,7 @@ for user in ${USERS}; do
     		let "sa=sa+1"
     		#sa=`expr $sa + 1`
     		Debug 1 "SPAM - $m"
-    		Run register_spam "${m}";
+    		[ -e ${m} ] && Run register_spam "${m}";
     		err=$((err + $?))
     		Debug 2 "ERR-SPAM: $err"
     	done
