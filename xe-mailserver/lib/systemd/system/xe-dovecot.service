@@ -21,8 +21,8 @@ LimitNOFILE=8192
 LimitAS=infinity 
 LimitRSS=infinity 
 LimitCORE=infinity 
-LimitNOFILE=65536
-#LimitNOFILE=infinity
+#LimitNOFILE=65536
+LimitNOFILE=infinity
 #RootDirectory=/usr/local
 #WorkingDirectory=var/run/dovecot
 ## Optional security settings
