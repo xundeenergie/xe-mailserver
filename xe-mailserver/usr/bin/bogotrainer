@@ -9,8 +9,9 @@ TEST=1
 ha=0	#Anzahl Ham-Mails
 sa=0	#Anzahl Spam-Mails
 MAIL=0	#Versenden eines Mails an root
-MAILDIR=/var/spool/dovecot/mails/
-USERS=$(find $MAILDIR -maxdepth 1 -mindepth 1 -type d|while read i;do basename $i;done)
+MAILDIR=/var/mail
+POSTMASTER=postmaster@aldebaran
+USERS=$(find $MAILDIR -maxdepth 1 -mindepth 1 -type d|grep -v "archiv\|mailarchiv\|public\|shared\|virtual\|real"|while read i;do basename $i;done)
 LOGFILE=/var/log/bogotrainer.log
 quiet=false
 DRY=false
@@ -76,19 +77,23 @@ register_ham () {
     Debug 1 "Registering $1 as HAM.">&2;
     #Run su -s /bin/sh -c \""${BOGO} ${BOPTS} -n -B ${1}"\" ${MAILUSER} ;
     Run ${BOGO} "${BOPTS}" "-n -B ${1}" ;
+    #su -s /bin/sh -c "${BOGO} ${BOPTS} -n -B ${1}" ${MAILUSER} ;
     err=$((err + $?))
+    Run ${SA} --no-sync --ham ${SOPTS} < $1 > /dev/null
     #sudo -u ${AMAVUSER} ${SA} --ham ${SOPTS} < $1 > /dev/null;
     #cmd="${SA} --ham ${SOPTS}"
     #su -c "${cmd}" ${AMAVUSER} < $1 > /dev/null;
     #err=$((err + $?))
   fi
-  return $err
+  Debug 1 "Errorcount registering ham: $err">&2;
+  #return 0
 }
 
 register_spam () {
   if [ -e "$1" ]; then
     Debug 1 "Registering $1 as SPAM.">&2;
     Run ${BOGO} "${BOPTS}" "-s -B ${1}"
+    Run ${SA} --no-sync --spam ${SOPTS} < $1 > /dev/null
     #err=$((err + $?))
   fi
   #return $err
@@ -100,11 +105,11 @@ Debug 1 vlevel: $vlevel
 Debug 1 USERS: $USERS
 for user in ${USERS}; do
     #test $MAILDIR || MAILDIR=/var/spool/dovecot/mails/$user
-    MAILDIR=${MAILDIR}/$user
+    UMAILDIR=${MAILDIR}/$user
     
     BOGO=/usr/bin/bogofilter
     SA=/usr/bin/sa-learn
-    BOPTS="-v -d /var/spool/exim4/bogofilter/"
+    BOPTS=" -v -d /var/spool/bogofilter/"
     SOPTS=""
     test $HTIME || HTIME=10
     test $STIME || STIME=30
@@ -118,14 +123,18 @@ for user in ${USERS}; do
     if [ $ham -eq 1 ]
     then
     	ha=0
-    	for m in $(find "${MAILDIR}" -type f -mtime -$HTIME|grep -iv 'cyrus\.[ich]\|spam\|junk\|test\|virus\|trash\|sent\|drafts\|archiv\|papierkorb\|[.]*dovecot[.-][uikml]\|maildirfolder\|subscriptions')
+    	for m in $(find "${UMAILDIR}" -type f -mtime -$HTIME -not -name ".*" |grep -iv 'cyrus\.[ich]\|spam\|junk\|test\|virus\|trash\|sent\|drafts\|archiv\|papierkorb\|[.]*dovecot[.-][uikml]\|maildirfolder\|subscriptions')
     	do
-    		let "ha=ha+1"
-    		Debug 1 "HAM - $m"
-    		#test $TEST -eq 0 && register_ham ${m};
-    		[ -e ${m} ] && Run register_ham "${m}"
-    		#err=$((err + $?))
-    		Debug 2 "ERR-HAM: $err"
+            if [ "$(basename "$m")" = "\..*" ]; then continue; fi
+            let "ha=ha+1"
+            Debug 1 "HAM - $m"
+            #test $TEST -eq 0 && register_ham ${m};
+            #echo "REGISTER $m"
+            Run register_ham "${m}"
+            #err=$((err + $?))
+            Debug 2 "ERR-HAM: $err"
+            #echo "-----"
+            
     	done 
     else
     	echo "Hamauswertung abgeschaltet"
@@ -135,33 +144,36 @@ for user in ${USERS}; do
     if [ $spam -eq 1 ]
     then
     	sa=0
-    	for m in $(find "${MAILDIR}" -type f -mtime -$STIME|grep -i 'spam\|junk'|grep -v 'cyrus\.[ich]\|dovecot[.-][uikml]\|maildirfolder')
+    	for m in $(find "${UMAILDIR}" -type f -mtime -$STIME -not -name ".*" |grep -i 'spam\|junk'|grep -v 'cyrus\.[ich]\|dovecot[.-][uikml]\|maildirfolder')
     	do 
-    		let "sa=sa+1"
-    		#sa=`expr $sa + 1`
-    		Debug 1 "SPAM - $m"
-    		[ -e ${m} ] && Run register_spam "${m}";
-    		err=$((err + $?))
-    		Debug 2 "ERR-SPAM: $err"
+            let "sa=sa+1"
+            #sa=`expr $sa + 1`
+            Debug 1 "SPAM - $m"
+            Run register_spam "${m}";
+            err=$((err + $?))
+            Debug 2 "ERR-SPAM: $err"
     	done
     else
     	echo "Spamauswertung abgeschaltet"
     fi
     
+#    Run ${SA} --sync 
+#    Run ${SA} --dump magic
 #    test $ha -gt 0 && echo "Registrierte Ham-Mails: $ha"
 #    test $sa -gt 0 && echo "Registrierte Spam-Mails: $sa"
     
     if test $MAIL -gt 0 
     then
-        cat <<EOF |mail -s "Running bogotrainer" root	
+        cat <<EOF |mail -s "Running bogotrainer for $user" -a "Content-Type: text/plain; charset=UTF-8" -aFrom:$POSTMASTER $user
     
-    bogofilter mit $0 $CMDL ausgeführt am $(date)
+    bogofilter für $user mit $0 $CMDL ausgeführt am $(date)
         
     Registrierte Ham-Mails: $ha
     Registrierte Spam-Mails: $sa
 EOF
 
     fi
+    unset UMAILDIR
     
 done
 exit $err
