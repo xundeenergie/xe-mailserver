@@ -1,13 +1,13 @@
 Package: xe-mailserver
-Version: 0.1.34
+Version: 0.1.35
 Section: mail
 Priority: extra
 Architecture: all
 Maintainer: Jakobus Schürz <jakob@xundeenergie.at>
 Homepage: http://github.com/xundeenergie/xe-mailserver
 Provides: xe-mailserver
-Depends: xe-mailserver-config, exim4-multiaccount
-Recommends: python3, pyhton3-pip, python3-setuptools, python3-wheel, dovecot|dovecot-imapd, php
+Depends: xe-mailserver-config, exim4-multiaccount, deb-systemd-helper-new
+Recommends: python3, pyhton3-pip, python3-setuptools, python3-wheel, dovecot|dovecot-imapd, php, mailutils
 Suggests: php-mbstring, pigonehole
 Description: Meta-Package for mailserver
  This package is a meta-package for a mailserver build with exim4, dovecot, spamassassin for xundeenergie
