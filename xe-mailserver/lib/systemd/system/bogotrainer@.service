@@ -5,7 +5,7 @@ ConditionPathExists=/usr/bin/bogotrainer
 OnFailure=status-email-root@%n.service
 
 [Service]
-User=Debian-exim
+User=vmail
 IOSchedulingClass=2
 IOSchedulingPriority=5
 ExecStart=/usr/bin/bogotrainer -i %i -m -q -v

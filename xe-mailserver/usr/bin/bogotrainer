@@ -76,10 +76,10 @@ register_ham () {
   if [ -e "$1" ]; then
     Debug 1 "Registering $1 as HAM.">&2;
     #Run su -s /bin/sh -c \""${BOGO} ${BOPTS} -n -B ${1}"\" ${MAILUSER} ;
-    Run ${BOGO} "${BOPTS}" "-n -B ${1}" ;
+    Run ${BOGO} "${BOPTS}" "-n -B ${1}"  > /dev/null;
     #su -s /bin/sh -c "${BOGO} ${BOPTS} -n -B ${1}" ${MAILUSER} ;
     err=$((err + $?))
-    Run ${SA} --no-sync --ham ${SOPTS} < $1 > /dev/null
+    Run ${SA} --sync --ham ${SOPTS} < $1 > /dev/null
     #sudo -u ${AMAVUSER} ${SA} --ham ${SOPTS} < $1 > /dev/null;
     #cmd="${SA} --ham ${SOPTS}"
     #su -c "${cmd}" ${AMAVUSER} < $1 > /dev/null;
@@ -92,8 +92,8 @@ register_ham () {
 register_spam () {
   if [ -e "$1" ]; then
     Debug 1 "Registering $1 as SPAM.">&2;
-    Run ${BOGO} "${BOPTS}" "-s -B ${1}"
-    Run ${SA} --no-sync --spam ${SOPTS} < $1 > /dev/null
+    Run ${BOGO} "${BOPTS}" "-s -B ${1}" > /dev/null
+    Run ${SA} --sync --spam ${SOPTS} < $1 > /dev/null
     #err=$((err + $?))
   fi
   #return $err
